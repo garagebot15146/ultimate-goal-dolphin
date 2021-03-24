@@ -91,7 +91,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private LinkedList<Pose2d> poseHistory;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private DcMotorEx leftFront, leftBack, rightBack, rightFront;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
@@ -141,11 +141,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+        motors = Arrays.asList(leftFront, leftBack, rightBack, rightFront);
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -164,6 +164,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
+
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
@@ -385,8 +390,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
+        leftBack.setPower(v1);
+        rightBack.setPower(v2);
         rightFront.setPower(v3);
     }
 
@@ -415,6 +420,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         // Rotate about the z axis is the default assuming your REV Hub/Control Hub is laying
         // flat on a surface
 
-        return (double) imu.getAngularVelocity().zRotationRate;
+        return (double) imu.getAngularVelocity().xRotationRate;
     }
 }
